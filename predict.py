@@ -9,20 +9,13 @@ def read_thetas():
     if not os.path.isfile(thetafile):
         print("AAAAAAAAAAAA")
     else:
-        with open(thetafile) as f:
-            content = f.read().splitlines()
-            theta0 = int(content[0])
-            theta1 = int(content[1])
+        f = open(thetafile)
+        content = f.read().splitlines()
+        theta0 = int(content[0])
+        theta1 = int(content[1])
+        f.close()
 
 
 def predict(km):
     return theta0 + theta1 * km
 
-try:
-    msg = int(input("kilometrage ? "))
-except:
-    print("not a number")
-    exit()
-
-read_thetas()
-print("prix:" + str(predict(msg)))
