@@ -3,19 +3,18 @@ import os.path
 
 def read_thetas():
     thetafile = "thetas"
-    global theta0
-    global theta1
 
     if not os.path.isfile(thetafile):
         print("AAAAAAAAAAAA")
     else:
         f = open(thetafile)
         content = f.read().splitlines()
-        theta0 = int(content[0])
-        theta1 = int(content[1])
+        theta0 = float(content[0])
+        theta1 = float(content[1])
         f.close()
+    return (theta0, theta1)
 
 
-def predict(km):
-    return theta0 + theta1 * km
+def predict(theta0, theta1, km):
+    return (theta0 + (theta1 * km))
 

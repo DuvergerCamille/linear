@@ -6,5 +6,5 @@ except:
     print("not a number")
     exit()
 
-read_thetas()
-print(str(predict(msg)))
+theta0, theta1 = read_thetas()
+print(str(predict(theta0, theta1, msg)))
