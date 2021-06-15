@@ -4,14 +4,6 @@ import os.path
 import math
 import matplotlib.pyplot as plt
 
-def variance(tab, mean):
-    tabVar = tab
-    for i in range(0, len(tab) - 1):
-        tabVar[i] = pow((tab[i] - mean), 2)
-    vrc = sum(tabVar)
-    vrc = vrc / (len(tab) - 1)
-    return vrc
-
 def stdingValues(content):
     tabPrice = []
     tabKm = []
@@ -27,7 +19,6 @@ def stdingValues(content):
 
 def training(filename):
     trainingRatio = 0.0001
-    trainingRatio1 = 0.0001
     if not os.path.isfile(filename):
         print("AAAAAAAAAAAA")
         exit()
@@ -35,7 +26,6 @@ def training(filename):
     content = f.read().splitlines()
     f.close
     [theta0, theta1] = read_thetas()
-    print("old = " + str(theta0) + ", " + str(theta1))
     stdValuesPrice, stdValuesKm = stdingValues(content)
     lnt = len(stdValuesPrice)
     while (True):
@@ -44,19 +34,22 @@ def training(filename):
             sumTheta0 += predict(theta0, theta1, stdValuesKm[i]) - stdValuesPrice[i]
             sumTheta1 += (predict(theta0, theta1, stdValuesKm[i]) - stdValuesPrice[i]) * stdValuesKm[i]
         tmp_theta0 = (sumTheta0 / lnt) * trainingRatio
-        tmp_theta1 = (sumTheta1 / lnt) * trainingRatio1
+        tmp_theta1 = (sumTheta1 / lnt) * trainingRatio
         if abs(tmp_theta0) < float(0.000001) and abs(tmp_theta1) < float(0.000001):
-			return (theta0, theta1)
+			return (theta0, theta1, stdValuesKm, stdValuesPrice)
         theta0 = theta0 - tmp_theta0
         theta1 = theta1 - tmp_theta1
-        ##print("new = " + str(theta0) + ", " + str(theta1))
-    ##plt.plot(stdValuesKm, stdValuesPrice)
-    ##plt.plot(stdValuesKm[i], theta1 * stdValuesKm[i] + theta0)
-    ##plt.show()
-    return (theta0, theta1)
+    return (theta0, theta1, stdValuesKm, stdValuesPrice)
 
-theta0, theta1 = training("data.csv")
+theta0, theta1, km, price = training("data.csv")
 theta0 = theta0 * 1000
+kmReal = [x * 1000. for x in km]
+priceReal = [x * 1000. for x in price]
 f = open("thetas", "w")
 f.write(str(theta0) + '\n' + str(theta1) + '\n')
 f.close()
+plt.plot(kmReal, priceReal, 'o', color='#ff0000')
+axeX = [0, 260000]
+axeY = [theta0, theta0 + (theta1 * 260000)]
+plt.plot(axeX, axeY, linestyle='dashed', color='#00ff00')
+plt.show()
